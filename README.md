@@ -3,8 +3,8 @@ Accepted by AAAI-22: Multi-Scale Distillation from Multiple Graph Neural Network
 
 The environment:
 - python==3.7.10
-- torch==1.7.1+cu101
-- dgl-cu101==0.6.1
+- torch==1.8.0+cu111
+- dgl-cu110==0.6.1
 
 ```
 1. cd /MSKD
