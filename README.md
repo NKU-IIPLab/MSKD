@@ -1,2 +1,4 @@
 # MSKD
-The code of paper ”Multi-Scale Distillation from Multiple Graph Neural Networks“.
+Accepted by AAAI-22: Multi-Scale Distillation from Multiple Graph Neural Networks
+
+The data is only for academic purposes.
