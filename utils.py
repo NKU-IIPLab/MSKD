@@ -122,6 +122,7 @@ def get_data_loader(args):
     test_dataset = PPIDataset(mode='test')
 
     train_dataloader = DataLoader(train_dataset, batch_size=args.batch_size, collate_fn=collate, num_workers=0, shuffle=True)
+    fixed_train_dataloader = DataLoader(train_dataset, batch_size=args.batch_size, collate_fn=collate, num_workers=0)
     valid_dataloader = DataLoader(valid_dataset, batch_size=args.batch_size, collate_fn=collate, num_workers=0)
     test_dataloader = DataLoader(test_dataset, batch_size=args.batch_size, collate_fn=collate, num_workers=0)
 
@@ -132,7 +133,7 @@ def get_data_loader(args):
     data_info['n_classes'] = n_classes
     data_info['num_feats'] = num_feats
     data_info['g'] = g
-    return (train_dataloader, valid_dataloader, test_dataloader), data_info
+    return (train_dataloader, valid_dataloader, test_dataloader, fixed_train_dataloader), data_info
 
 
 def save_checkpoint(model, path):
