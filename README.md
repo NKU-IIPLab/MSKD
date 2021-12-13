@@ -6,7 +6,7 @@ The environment:
 - torch==1.7.1+cu101
 - dgl-cu101==0.6.1
 
-1. > cd /MSKD
-2. > python main.py
+1. '''cd /MSKD'''
+2. '''python main.py'''
 
 **The data is only for academic purposes.**
