@@ -19,7 +19,7 @@ def train_student(args, models, data, device):
     max_score = 0
     best_loss = 1000.0
 
-    train_dataloader, valid_dataloader, test_dataloader = data
+    train_dataloader, valid_dataloader, test_dataloader, fixed_train_dataloader = data
 
     loss_fcn = torch.nn.BCEWithLogitsLoss()
 
@@ -36,9 +36,10 @@ def train_student(args, models, data, device):
         loss_list = []
         additional_loss_list = []
         t0 = time.time()
-        for batch, batch_data in enumerate(zip(train_dataloader)):
+        for batch, batch_data in enumerate(zip(train_dataloader, fixed_train_dataloader)):
             step_n += 1
-            subgraph, feats, labels = batch_data
+            shuffle_data, _ = batch_data
+            subgraph, feats, labels = shuffle_data
 
             feats = feats.to(device)
             labels = labels.to(device)
@@ -113,7 +114,7 @@ def train_student(args, models, data, device):
 
 
 def train_teacher(args, model, data, device):
-    train_dataloader, valid_dataloader, test_dataloader = data
+    train_dataloader, valid_dataloader, test_dataloader, _ = data
     loss_fcn = torch.nn.BCEWithLogitsLoss()
 
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
@@ -201,7 +202,7 @@ def main(args):
 
     # verify the teacher model
     loss_fcn = torch.nn.BCEWithLogitsLoss()
-    train_dataloader, _, test_dataloader = data
+    train_dataloader, _, test_dataloader, _ = data
     print(f"test acc of teacher with 1 hidden layer:")
     test_model(test_dataloader, t1_model, device, loss_fcn)
     print(f"train acc of teacher with 1 hidden layer:")
