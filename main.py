@@ -5,7 +5,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 from utils import evaluate
-from utils import get_data_loader, save_checkpoint, load_checkpoint
+from utils import get_data_loader, save_checkpoint, load_checkpoint, mlp
 from utils import parameters, evaluate_model, test_model, generate_label, collect_model
 from loss import kd_loss, graphKL_loss, optimizing
 import warnings
@@ -49,6 +49,7 @@ def train_student(args, models, data, device):
                 layer.g = subgraph
 
             logits, middle_feats_s = s_model(feats.float(), middle=True)
+            dim = len(logits[0])
 
             if epoch >= args.tofull:
                 args.mode = 'full'
@@ -65,6 +66,11 @@ def train_student(args, models, data, device):
                 else:
                     class_loss = kd_loss(logits, logits_t3)
                 class_loss_detach = class_loss.detach()
+
+                logits = mlp(dim, logits, device)
+                logits_t1 = mlp(dim, logits_t1, device)
+                logits_t2 = mlp(dim, logits_t2, device)
+                logits_t3 = mlp(dim, logits_t3, device)
 
                 if alpha == 0:
                     alpha_0 = torch.mean(torch.flatten(logits.t().mm(logits_t1)))
