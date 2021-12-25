@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import torch
+import torch.nn as nn
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
 from sklearn.metrics import f1_score
@@ -107,6 +108,13 @@ def get_student(args, data_info):
     return model
 
 
+def mlp(dim, logits, device):
+    linear = nn.Linear(dim, dim).to(device)
+    relu = nn.ReLU()
+    # return linear(relu(linear(logits)))
+    return linear(logits)
+
+
 def get_feat_info(args):
     feat_info = {}
     feat_info['s_feat'] = [args.s_num_heads * args.s_num_hidden] * args.s_num_layers
@@ -121,10 +129,10 @@ def get_data_loader(args):
     valid_dataset = PPIDataset(mode='valid')
     test_dataset = PPIDataset(mode='test')
 
-    train_dataloader = DataLoader(train_dataset, batch_size=args.batch_size, collate_fn=collate, num_workers=4, shuffle=True)
-    fixed_train_dataloader = DataLoader(train_dataset, batch_size=args.batch_size, collate_fn=collate, num_workers=4)
-    valid_dataloader = DataLoader(valid_dataset, batch_size=args.batch_size, collate_fn=collate, num_workers=2)
-    test_dataloader = DataLoader(test_dataset, batch_size=args.batch_size, collate_fn=collate, num_workers=2)
+    train_dataloader = DataLoader(train_dataset, batch_size=args.batch_size, collate_fn=collate, num_workers=0, shuffle=True)
+    fixed_train_dataloader = DataLoader(train_dataset, batch_size=args.batch_size, collate_fn=collate, num_workers=0)
+    valid_dataloader = DataLoader(valid_dataset, batch_size=args.batch_size, collate_fn=collate, num_workers=0)
+    test_dataloader = DataLoader(test_dataset, batch_size=args.batch_size, collate_fn=collate, num_workers=0)
 
     n_classes = train_dataset.labels.shape[1]
     num_feats = train_dataset.features.shape[1]
